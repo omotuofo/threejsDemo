@@ -9,10 +9,10 @@ console.log(scene);
 //创建一个长方体几何对象Geometry
 const geometry = new THREE.BoxGeometry(100, 100, 100); 
 
-//创建一个材质对象Material
+// 基础材质
 const material = new THREE.MeshBasicMaterial({
     color: 0xff0000,//0xff0000设置材质颜色为红色
-    transparent:true,//开启透明
+    transparent: false,//开启透明
     opacity:0.5,//设置透明度
 }); 
 
@@ -28,7 +28,7 @@ const mesh2 = new THREE.Mesh(geometry, material2); //网格模型对象Mesh
 mesh.position.set(100, 0, 200);
 
 scene.add(mesh); 
-scene.add(mesh2); 
+// scene.add(mesh2); 
 
 // AxesHelper：辅助观察的坐标系
 // threeJS的坐标系，红绿蓝代表XYZ，y轴朝上的右手坐标系。
@@ -68,7 +68,8 @@ pointLight.position.set(200, 200, 200);//点光源放在x轴上
 scene.add(pointLight); //点光源添加到场景中
 
 // 光源辅助观察
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 10);
+// 参数二：观察器大小
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 100);
 scene.add(pointLightHelper);
 
 //环境光:没有特定方向，整体改变场景的光照明暗
@@ -163,7 +164,8 @@ const num = 1000; //控制长方体模型数量
 for (let i = 0; i < num; i++) {
     const geometry = new THREE.BoxGeometry(5, 5, 5);
     const material = new THREE.MeshLambertMaterial({
-        color: 0x00ffff
+        // color: 0x00ffff
+        color: 0xffffff
     });
     const mesh = new THREE.Mesh(geometry, material);
     // 随机生成长方体xyz坐标

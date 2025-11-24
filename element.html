@@ -4,9 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <title>three.js css3d - 元素周期表</title>
-<!-- ceshi -->
 <style>
-
 html, body {
     height: 100%;
 }
@@ -14,7 +12,7 @@ html, body {
 body {
     background-color: #000;
     margin: 0;
-    font-family: Helvetica, sans-serif;;
+    font-family: Helvetica, sans-serif;
     overflow: hidden;
 }
 
@@ -312,29 +310,23 @@ function init() {
 
     var vector = new THREE.Vector3();
 
-    for ( var i = 0, l = objects.length; i < l; i ++ ) {
+    for ( var i = 0, l = table.length/5; i < l; i ++ ) {
 
-        // 把-1~1，转化到0~Π范围，分布率按cos函数的导数
         var phi = Math.acos( -1 + ( 2 * i ) / l );
         var theta = Math.sqrt( l * Math.PI ) * phi;
-        // var theta =  l * Math.PI * phi;
-        //  var theta =  0;
+        // var theta = 1;
 
         var object = new THREE.Object3D();
 
-        // object.position.x = 800 * theta;
-        // object.position.x = 800 * Math.cos( theta ) * Math.sin( phi );
-        // object.position.y = 800 * Math.sin( theta ) * Math.sin( phi );
-        // object.position.z = 800 * Math.cos( phi );
-        object.position.x = 800 * Math.cos( theta ) * Math.sin( 1 );
-        object.position.y = 800 * Math.sin( theta ) * Math.sin( 1 );
-        object.position.z = 800 * Math.cos( 1 );
+        object.position.x = 800 * Math.cos( theta ) * Math.sin( phi );
+        object.position.y = 800 * Math.sin( theta ) * Math.sin( phi );
+        object.position.z = 800 * Math.cos( phi );
 
         // 翻转，文字朝外
         vector.copy( object.position ).multiplyScalar( 2 );
 
         // 指向中心点
-        // object.lookAt( vector );
+        object.lookAt( vector );
 
         targets.sphere.push( object );
 
@@ -409,7 +401,7 @@ function init() {
     controls = new OrbitControls( camera, renderer.domElement );
     controls.rotateSpeed = 1;
     controls.minDistance = 500;
-    controls.maxDistance = 6000;
+    controls.maxDistance = 60000;
     controls.enableDamping = true; // 启用阻尼
     controls.dampingFactor = 1.25; // 阻尼因子
     // controls.screenSpacePanning = true; // 屏幕空间平移

@@ -3,7 +3,7 @@
     <head>
 
         <script src="./libs/three.min.js"></script>
-        <script src="./libs/OrbitControls.js"></script>
+        <!-- <script src="./libs/OrbitControls.js"></script> -->
         
         <style>
             body{
@@ -21,7 +21,10 @@
 
 
     
-    <script>
+    <script type="module">
+        import { OrbitControls } from './libs/OrbitControls.js';
+
+        
         var scene = new THREE.Scene();  
         console.log(scene);
 
@@ -128,7 +131,7 @@
 
         // 设置相机控件轨道控制器OrbitControls
         // 由于引用了OrbitControls控件，相机的lookAt 被OrbitControls控件更改了。
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        const controls = new OrbitControls(camera, renderer.domElement);
         // controls.autoRotate = true;
         // 如果OrbitControls改变了相机参数，需要重新调用渲染器渲染三维场景（改变了要重新渲染）
         // controls.addEventListener('change', function () {

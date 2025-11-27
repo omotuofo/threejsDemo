@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { OrbitControls } from './libs/OrbitControls.js';
-import { GUI } from './libs/lil-gui.module.min.js';
-import Stats from './libs/stats.module.js';
+import { OrbitControls } from '../libs/OrbitControls.js';
+import { GUI } from '../libs/lil-gui.module.min.js';
+import Stats from '../libs/stats.module.js';
 
 
 
@@ -17,21 +17,21 @@ const aspect = width/height;
 const camera = new THREE.PerspectiveCamera(90, aspect, 1, 5000);
 camera.position.set(200, 200, 200);
 
-//环境光:没有特定方向，整体改变场景的光照明暗
+// 环境光:没有特定方向，整体改变场景的光照明暗
 const ambient = new THREE.AmbientLight(0xffffff, 10);
 scene.add(ambient);
 
 // 创建渲染器对象
 const renderer = new THREE.WebGLRenderer();
-renderer.setClearColor(0x444444, 1); //设置背景颜色
+renderer.setClearColor(0x444444, 1); // 环境背景颜色
 renderer.setSize(width, height); //设置three.js渲染区域的尺寸(像素px)
 renderer.render(scene, camera); //执行渲染操作
 document.body.appendChild(renderer.domElement);
-renderer.antialias = false;
+renderer.antialias = true; // 抗锯齿(默认false)
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-//创建stats对象（左上角性能监视器）
+// 创建stats对象（左上角性能监视器）
 const stats = new Stats();
 document.body.appendChild(stats.domElement);
 
@@ -73,7 +73,7 @@ const fragmentShader = `
     uniform float y; //变化的y控制光带高度
     varying vec3 vColor;
     varying vec3 vPosition;//获取顶点着色器插值数据vPosition
-    float w = 10.0;//光带宽度一半
+    float w = 10.0;// 移动的光带宽度，一半值
     void main(){
         // 写片元着色器的代码  
         // gl_FragColor = vec4(0.0,1.0,1.0, 0.1);

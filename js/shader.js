@@ -57,7 +57,7 @@ const vertexShader = `
     attribute float size;//着色器size变量
     void main(){
         // gl_PointSize = 20.0;
-        gl_PointSize = 20.0 * size;
+        // gl_PointSize = 20.0 * size;
         vColor = color;// 顶点颜色数据进行插值计算
         vPosition = vec3(modelMatrix * vec4( position, 1.0 ));// 顶点位置坐标插值计算
         // 投影矩阵 * 视图矩阵 * 模型矩阵 * 顶点坐标
@@ -98,6 +98,7 @@ const fragmentShader = `
         float per = (vPosition.y + 25.0)/50.0;
         // 几何体顶点y坐标25，颜色值：1  0  0(红色)
         // 几何体顶点y坐标-25，颜色值：0  1  0(绿色)
+        // 渐变色贴图
         gl_FragColor = vec4(per,1.0-per,0.0,1.0);
 
         // vec2(0.5, 0.5)是方形点的圆心
@@ -120,6 +121,7 @@ const fragmentShader = `
 `
 const geometry = new THREE.PlaneGeometry(100, 50);
 const material = new THREE.ShaderMaterial({
+    // wireframe: true,
     vertexShader: vertexShader,// 顶点着色器
     fragmentShader: fragmentShader,// 片元着色器
     side: THREE.DoubleSide,//双面显示

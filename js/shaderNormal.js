@@ -22,7 +22,11 @@ const ambient = new THREE.AmbientLight(0xffffff, 10);
 scene.add(ambient);
 
 // 创建渲染器对象
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,  // 启用抗锯齿
+    alpha: true,      // 如果需要透明背景
+    powerPreference: 'high-performance' // 高性能模式
+});
 renderer.setClearColor(0x444444, 1); // 环境背景颜色
 renderer.setSize(width, height); //设置three.js渲染区域的尺寸(像素px)
 renderer.render(scene, camera); //执行渲染操作
@@ -191,12 +195,96 @@ radarFolder.add(radarGeometry.parameters, 'width', 50, 500).name('半径').onCha
 
 
 /** -------------------------------------光墙开始----------------------------------------------------------------- */
+
+const geometryWall = new THREE.BufferGeometry();
+// 顶点位置数据(三个点组成一个面)
+const vertices = new Float32Array([
+   0.0,  0.0,  0.0,  // 顶点1
+   100.0,  0.0,  0.0,  // 顶点2
+   100.0,  50.0,  0.0,  // 顶点3
+   0.0,  50.0,  0.0, // 顶点4 
+   100.0,  0.0,  -50.0,  // 顶点5
+   100.0,  50.0,  -50.0,  // 顶点6
+]);
+// UV数据和顶点一一对应
+const uvs = new Float32Array([
+    0.0, 0.0,  // 顶点1
+    0.5, 0.0,  // 顶点2
+    0.5, 1.0,  // 顶点3
+    0.0, 1.0,  // 顶点4
+    1.0, 0.0,  // 顶点5
+    1.0, 1.0   // 顶点6
+]);
+
+// 创建 BufferAttribute 并添加到 geometry
+// 参数说明：new THREE.BufferAttribute(
+//   array,          // 类型化数组：Float32Array, Uint16Array等
+//   itemSize,       // 每个顶点的分量数：position是3，uv是2
+//   normalized,     // 是否标准化：通常false，除非是颜色/法线
+//   version         // 版本号：用于跟踪更新（内部使用）
+// );
+geometryWall.attributes.position = new THREE.BufferAttribute(vertices, 3);
+// geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+geometryWall.attributes.uv = new THREE.BufferAttribute(uvs, 2);
+
+// 索引数组：定义如何连接这些顶点
+const indices = new Uint16Array([
+    0, 1, 2,   // 第一个三角形：左下→右下→右上
+    0, 2, 3,    // 第二个三角形：左下→右上→左上
+    1, 4, 5,   // 第三个三角形：右下→右前下→右前上
+    1, 5, 2    // 第四个三角形：右下→右前上→右上
+]);
+geometryWall.setIndex(new THREE.BufferAttribute(indices, 1));
+
+// 计算法线（如果需要光照）
+geometryWall.computeVertexNormals();
+// const meshWall = new THREE.Mesh(geometryWall, normalMaterial);
+// meshWall.position.set(400, 0, 0);
+// scene.add(meshWall);
+let wallGroup = new THREE.Group();
+
+const wallTextureLight = texLoader.load('./images/float_light.png');
+const wallTexture = texLoader.load('./images/float_wall.png');
+wallTextureLight.wrapS = THREE.RepeatWrapping;
+wallTextureLight.wrapT = THREE.RepeatWrapping;
+// 重复次数
+wallTextureLight.repeat.x = 3;
+wallTextureLight.repeat.y = 3;
+
+let floatLightMaterial = new THREE.MeshLambertMaterial({
+    color: 16776960,
+    map: wallTextureLight,
+    side: THREE.DoubleSide,
+    transparent: !0,
+    depthTest: !1
+});
+let floatLightMesh = new THREE.Mesh(geometryWall, floatLightMaterial);
+wallGroup.add(floatLightMesh);
+
+let wallMaterial = new THREE.MeshLambertMaterial({
+    color: 65535,
+    map: wallTexture,
+    side: THREE.DoubleSide,
+    transparent: !0,
+    opacity: 0.5,
+    depthTest: !1
+});
+let floatWallMesh = new THREE.Mesh(geometryWall, wallMaterial);
+wallGroup.add(floatWallMesh);
+wallGroup.position.set(400, 0, 0);
+scene.add(wallGroup);
+
+
+
 /** -------------------------------------光墙结束----------------------------------------------------------------- */
+
 
 // 渲染循环
 function render() {
     renderer.render(scene, camera);
     radarMeshI.rotateZ(0.02);
+
+    wallTextureLight.offset.x -= 0.02;
     requestAnimationFrame(render);
 }
 render();
